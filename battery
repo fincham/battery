@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     time = device.get_time()
     if time:
-        m = divmod(device.get_time(), 60)[0]
+        m = divmod(time, 60)[0]
         h, m = divmod(m, 60)
         time = " %i:%i" % (h, m)
     else:
