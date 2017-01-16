@@ -1,0 +1,55 @@
+#!/usr/bin/python
+
+"""
+Iterrogate upowerd over dbus to see what's up with the synthesised composite battery device. No promises.
+
+Michael Fincham <michael@hotplate.co.nz> 2017-01-16
+"""
+
+import dbus
+
+class DisplayDevice(object):
+    # from <https://upower.freedesktop.org/docs/Device.html#Device:State>
+    battery_states = (
+        'Unknown',
+        'Charging',
+        'Discharging',
+        'Empty',
+        'Fully charged',
+        'Pending charge',
+        'Pending discharge'
+    )
+
+    def __init__(self):
+        self.bus = dbus.SystemBus()
+        self.display_device = self.bus.get_object('org.freedesktop.UPower', '/org/freedesktop/UPower/devices/DisplayDevice')
+        
+    def get_property(self, property_name):
+        # Some interesting properties for a battery:
+        # Percentage
+        # TimeToFull
+        # TimeToEmpty
+        # State
+        return self.display_device.Get('org.freedesktop.UPower', property_name, dbus_interface=dbus.PROPERTIES_IFACE)
+ 
+    def get_state(self):
+        return self.battery_states[self.get_property('state')]
+
+    def get_time(self):
+        state = self.get_state()
+        if state == 'Discharging':
+            return device.get_property('TimeToEmpty')
+        elif state == 'Charging':
+            return device.get_property('TimeToFull')
+
+if __name__ == '__main__':
+    device = DisplayDevice()
+    state = device.get_state()
+    percentage = round(device.get_property('Percentage'))
+
+    m = divmod(device.get_time(), 60)[0]
+    h, m = divmod(m, 60)
+    time = " %i:%i" % (h, m)
+
+    print("%s %s%%%s" % (state, percentage, time))
+
