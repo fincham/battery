@@ -48,9 +48,13 @@ if __name__ == '__main__':
     state = device.get_state()
     percentage = round(device.get_property('Percentage'))
 
-    m = divmod(device.get_time(), 60)[0]
-    h, m = divmod(m, 60)
-    time = " %i:%i" % (h, m)
+    time = device.get_time()
+    if time:
+        m = divmod(device.get_time(), 60)[0]
+        h, m = divmod(m, 60)
+        time = " %i:%i" % (h, m)
+    else:
+        time = ''
 
     print("%s %s%%%s" % (state, percentage, time))
 
