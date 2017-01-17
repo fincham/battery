@@ -7,6 +7,8 @@ On e.g. Lenovo laptops with multiple batteries this produces a nice one line sum
 Michael Fincham <michael@hotplate.co.nz> 2017-01-16
 """
 
+import sys
+
 import dbus
 
 class DisplayDevice(object):
@@ -22,9 +24,13 @@ class DisplayDevice(object):
     )
 
     def __init__(self):
-        self.bus = dbus.SystemBus()
-        self.display_device = self.bus.get_object('org.freedesktop.UPower', '/org/freedesktop/UPower/devices/DisplayDevice')
-        
+        try:
+            self.bus = dbus.SystemBus()
+            self.display_device = self.bus.get_object('org.freedesktop.UPower', '/org/freedesktop/UPower/devices/DisplayDevice')
+        except:
+            print("Error connecting to dbus")
+            sys.exit(2)
+            
     def get_property(self, property_name):
         """
         Retrieve a dbus property for the DisplayDevice.
