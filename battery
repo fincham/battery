@@ -10,7 +10,7 @@ Michael Fincham <michael@hotplate.co.nz> 2017-01-16
 import dbus
 
 class DisplayDevice(object):
-    # from <https://upower.freedesktop.org/docs/Device.html#Device:State>
+    # from <https://upower.freedesktop.org/docs/Device.html#Device:State> 2017-01-16
     battery_states = (
         'Unknown',
         'Charging',
@@ -26,17 +26,27 @@ class DisplayDevice(object):
         self.display_device = self.bus.get_object('org.freedesktop.UPower', '/org/freedesktop/UPower/devices/DisplayDevice')
         
     def get_property(self, property_name):
-        # Some interesting properties for a battery:
+        """
+        Retrieve a dbus property for the DisplayDevice.
+        
+        Some interesting properties for a battery:
         # Percentage
         # TimeToFull
         # TimeToEmpty
         # State
+        """
         return self.display_device.Get('org.freedesktop.UPower', property_name, dbus_interface=dbus.PROPERTIES_IFACE)
  
     def get_state(self):
+        """
+        Provide an english text string describing the state of the battery.
+        """
         return self.battery_states[self.get_property('state')]
 
     def get_time(self):
+        """
+        The number of seconds until the battery is either charged or discharged, depending on what is currently happening.
+        """
         state = self.get_state()
         if state == 'Discharging':
             return device.get_property('TimeToEmpty')
