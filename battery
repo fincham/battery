@@ -46,13 +46,13 @@ class DisplayDevice(object):
 if __name__ == '__main__':
     device = DisplayDevice()
     state = device.get_state()
-    percentage = round(device.get_property('Percentage'))
+    percentage = int(round(device.get_property('Percentage')))
 
-    time = device.get_time()
-    if time:
-        m = divmod(time, 60)[0]
-        h, m = divmod(m, 60)
-        time = " %i:%i" % (h, m)
+    seconds = device.get_time()
+    if seconds:
+        minutes = divmod(seconds, 60)[0]
+        hours, minutes = divmod(minutes, 60)
+        time = " %i:%i" % (hours, minutes)
     else:
         time = ''
 
